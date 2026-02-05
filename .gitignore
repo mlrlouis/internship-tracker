@@ -7,14 +7,14 @@ __pycache__/
 db.sqlite3
 local_settings.py
 
-# --- Umgebungsvariablen & Secrets (WICHTIG!) ---
+# --- Environment Variables & Secrets ---
 .env
 .venv
 venv/
 ENV/
 
-# --- VS Code Einstellungen (Optional, aber gut) ---
+# --- VS Code settings ---
 .vscode/
 
-# --- Mac OS Müll (da du einen Mac hast) ---
+# --- Mac-OS trash
 .DS_Store
