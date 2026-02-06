@@ -1,39 +1,43 @@
-import requests
-import os
-from dotenv import load_dotenv
-
-# load environment variables
-load_dotenv()
-API_KEY = os.getenv("FMP_API_KEY")
-
-if not API_KEY:
-        print("Warning: FMP_API_KEY not found! Please check your .env file!")
+import yfinance as yf
 
 def get_company_symbol(name):
-        url = f"https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={API_KEY}"
+       return name
+
+def get_company_profile(symbol):
 
         try:
-                response = requests.get(url)
-                response.raise_for_status()
+                ticker = yf.Ticker(symbol)
+                info = ticker.info
 
-                data = response.json()
-
-                if data:
-                        profile = data[0]
-
-                        company_data = {
-                                'name': profile.get('companyName'),
-                                'description': profile.get('description'),
-                                'industry': profile.get('industry'),
-                                'country': profile.get('country'),
-                                'logo_url': profile.get('image'),
-                                'website': profile.get('website'),
-                                'employee_number': str(profile.get('fullTimeEmployees', 'N/A')),
-                                'revenue': str(profile.get('mktCap', 'N/A'))
-                        }
-                        return company_data
-                else:
+                if 'symbol' not in info and 'shortName' not in info:
                         return None
-        except requests.exceptions.RequestException as e:
-                print(f"Error fetching profile: {e}")
+
+                company_data = {
+                        'name': info.get('longName') or info.get('shortName'),
+                        'description': info.get('longBusinessSummary'),
+                        'industry': info.get('industry'),
+                        'country': info.get('country'),
+                        'website': info.get('website'),
+                        'employee_number': str(info.get('fullTimeEmployees', 'N/A')),
+                        'revenue': str(info.get('totalRevenue', 'N/A'))
+                }
+                
+                return company_data
+        
+        except Exception as e:
+                print(f"Error fetching data for {symbol}: {e}")
                 return None
+
+# Testting        
+if __name__ == "__main__":
+        search_name = "AMZN"
+        print(f"Testing data for fetch: {search_name}")
+
+        details = get_company_profile(search_name)
+
+        if details:
+                print("\nData found:\n")
+                for key, value in details.items():
+                        print(f"{key}: {value}")
+        else:
+                print("Nothing found! Check if you used a valid ticker.")
