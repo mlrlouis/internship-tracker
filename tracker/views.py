@@ -5,7 +5,7 @@ from .models import Company
 from .services.company_api import save_company_to_db
 
 # Create your views here.
-def company_view(request):
+def company_list(request):
         # Case 1: User clicked 'Add Company'
         if request.method == 'POST':
                 form = CompanyForm(request.POST)

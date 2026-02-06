@@ -29,7 +29,7 @@ def get_company_profile(symbol):
                 print(f"Error fetching data for {symbol}: {e}")
                 return None
 
-def save_company_in_db(symbol):
+def save_company_to_db(symbol):
         data = get_company_profile(symbol)
 
         if data:
