@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+        <title>Internship Tracker</title>
+        <style>
+                body{ font-family: sans-serif; max-width: 1000px; margin: 0; padding: 20px;}
+                message { padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+                .success { background-color: #d4edda; color: #155724; }
+                .error { background-color: #f8d7da; color: #721c24; }
+                .company-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
+                .header-row { display: flex; justify-content: space-between; align-items: center; }
+                button { padding: 10px 20px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;}
+                input[type="text"] { padding: 8px; width: 200px; }
+        </style>
+</head>
+<body>
+                <!--[if lt IE 7]>
+                        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+                <![endif]-->
+                <h1>Internship Tracker</h1>
+
+                {% if messages %}
+                        {% for message in messages %}
+                        <div class="message {{ message.tags }}">
+                                {{ message }}
+                        </div>
+                        {% endfor %}
+                {% endif %}
+
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30ßx;">
+                        <h2>Add new Company</h2>
+                        <form method="post">
+                            {% csrf_token %}  {{ form.as_p }}   <button type="submit">Add Company</button>    
+                        </form>
+                </div>
+
+                <h2>Tracked Companies ({{ companies.count }})</h2>
+
+                {% for company in companies %}
+                        <div class="company-card">
+                                <div class="header-row">
+                                        <h3>{{ company.name }}</h3>
+                                        <span style="color: grey;">
+                                                {{ company.industry }}
+                                        </span>
+                                </div>
+
+                                <p><strong>Employees:</strong> {{ company.employee_count}} | <strong>Revenue:</strong> {{ company.revenue }}</p>
+                                <p><em>{{ company.description|truncatewords:30 }}</em></p> 
+                                {% if company.website %}
+                                        <a href="{{ company.website }}" target="_blank">Visit Website</a>
+                                {% endif %}
+                        </div>
+                {% empty %}
+                        <p>No companies tracked yet. Add your first one above!</p>
+                {% endfor %}
+</body>
+</html>
