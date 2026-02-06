@@ -1,4 +1,5 @@
 import yfinance as yf
+from tracker.models import Company
 
 def get_company_symbol(name):
        return name
@@ -18,7 +19,7 @@ def get_company_profile(symbol):
                         'industry': info.get('industry'),
                         'country': info.get('country'),
                         'website': info.get('website'),
-                        'employee_number': str(info.get('fullTimeEmployees', 'N/A')),
+                        'employee_count': str(info.get('fullTimeEmployees', 'N/A')),
                         'revenue': str(info.get('totalRevenue', 'N/A'))
                 }
                 
@@ -28,16 +29,47 @@ def get_company_profile(symbol):
                 print(f"Error fetching data for {symbol}: {e}")
                 return None
 
-# Testting        
-if __name__ == "__main__":
-        search_name = "AMZN"
-        print(f"Testing data for fetch: {search_name}")
+def save_company_in_db(symbol):
+        data = get_company_profile(symbol)
 
-        details = get_company_profile(search_name)
+        if data:
+                try:
+                        company, created = Company.objects.update_or_create(
+                                name = data['name'],
+                                defaults = {
+                                        'description': data['description'],
+                                        'industry': data['industry'],
+                                        'country': data['country'],
+                                        'website': data['website'],
+                                        'employee_count': data['employee_count'],
+                                        'revenue': data['revenue']
+                                }
+                        )
 
-        if details:
-                print("\nData found:\n")
-                for key, value in details.items():
-                        print(f"{key}: {value}")
+                        if created:
+                                print(f"New company created: {company.name}")
+                        else:
+                                print(f"Company updated: {company.name}")
+                        
+                        return company
+                except Exception as e:
+                        print(f"Error saving to DB: {e}")
+                        return None
         else:
-                print("Nothing found! Check if you used a valid ticker.")
+                print(f"No data found for {symbol}")
+                return None
+                
+
+# Testting        
+# if __name__ == "__main__":
+#         search_name = "AMZN"
+#         print(f"Testing data for fetch: {search_name}")
+
+#         details = get_company_profile(search_name)
+
+#         if details:
+#                 print("\nData found:\n")
+#                 for key, value in details.items():
+#                         print(f"{key}: {value}")
+#         else:
+#                 print("Nothing found! Check if you used a valid ticker.")

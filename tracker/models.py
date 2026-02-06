@@ -16,7 +16,7 @@ class Company(models.Model):
         logo_url= models.URLField(blank=True, null=True)
 
         def __str__(self):
-                return str.name
+                return self.name
 
 class Application(models.Model):
         #Status Choices for the dropdown menu
