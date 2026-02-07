@@ -28,10 +28,12 @@ class Application(models.Model):
                 ('rejected', 'Rejected'),
         ]
 
-        company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='applied')
+        company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='applications')
+        role = models.CharField(max_length=200)
+
+        country = models.CharField(max_length=100, default="Germany")
 
         status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='saved')
-        role = models.CharField(max_length=200, help_text='e.g. Software Engineer Intern')
         job_link = models.URLField(blank=True, null=True)
         date_applied = models.DateField(default=timezone.now)
         notes = models.TextField(blank=True, null=True)

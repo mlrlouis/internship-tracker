@@ -4,40 +4,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Internship Tracker</title>
-    
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
-    
     <style>
-        /* Layout adjustments */
         body { padding: 20px; max-width: 1200px; margin: 0 auto; }
         
-        /* These classes replace the inline if-logic for colors */
-        .msg-success { 
-            background-color: #d4edda; 
-            color: #155724; 
-            border: 1px solid #c3e6cb; 
-            padding: 10px; 
-            margin-bottom: 20px; 
-            border-radius: 5px;
-        }
-        .msg-error { 
-            background-color: #f8d7da; 
-            color: #721c24; 
-            border: 1px solid #f5c6cb; 
-            padding: 10px; 
-            margin-bottom: 20px; 
-            border-radius: 5px;
-        }
-
-        /* STATUS BADGES */
+        /* Message Colors */
+        .msg-success { background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #c3e6cb;}
+        .msg-error { background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #f5c6cb;}
+        
+        /* Badges */
         .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 0.75em; font-weight: bold; color: white; display: inline-block;}
-        .status-saved { background-color: #6c757d; }      
-        .status-applied { background-color: #f6c23e; }    
-        .status-interview { background-color: #36b9cc; }  
-        .status-offer { background-color: #1cc88a; }      
-        .status-rejected { background-color: #e74a3b; }   
+        .status-saved { background-color: #6c757d; }
+        .status-applied { background-color: #f6c23e; }
+        .status-interview { background-color: #36b9cc; }
+        .status-offer { background-color: #1cc88a; }
+        .status-rejected { background-color: #e74a3b; }
 
-        /* TABLE TWEAKS */
         td { vertical-align: top; }
         details { margin-bottom: 0; border-bottom: none; }
         summary { font-size: 0.85rem; color: #007bff; font-weight: bold; cursor: pointer; }
@@ -70,35 +52,39 @@
                     {{ form.company_name }}
                 </div>
                 <div>
-                    <label>Role *</label>
-                    {{ form.role }}
+                    <label>Ticker Symbol (Optional)</label>
+                    {{ form.company_symbol }}
+                    <small>For auto-data (e.g., AAPL)</small>
                 </div>
             </div>
             
             <div class="grid">
                 <div>
-                    <label>Ticker Symbol (Optional)</label>
-                    {{ form.company_symbol }}
-                    <small>e.g., AAPL (Triggers auto-fetch from Yahoo Finance)</small>
+                    <label>Role *</label>
+                    {{ form.role }}
                 </div>
                 <div>
-                    <label>Status</label>
-                    {{ form.status }}
+                    <label>Country *</label> {{ form.country }}
                 </div>
             </div>
 
             <div class="grid">
+                <div>
+                    <label>Status</label>
+                    {{ form.status }}
+                </div>
                  <div>
                     <label>Job Ad Link</label>
                     {{ form.job_link }}
                  </div>
-                 <div>
-                    <label>My Notes</label>
-                    {{ form.notes }}
-                 </div>
             </div>
 
-            <button type="submit">Track Application</button>
+            <div>
+                <label>My Notes</label>
+                {{ form.notes }}
+            </div>
+
+            <button type="submit" style="margin-top: 20px;">Track Application</button>
         </form>
     </article>
 
@@ -121,7 +107,7 @@
                         {{ app.get_status_display }}
                     </span>
                     <br>
-                    <small style="color: gray; margin-top: 5px; display: block;">
+                    <small style="color: gray; display: block; margin-top:5px;">
                         📅 {{ app.date_applied|date:"M d, Y" }}
                     </small>
                 </td>
@@ -130,20 +116,16 @@
                     <strong>{{ app.role }}</strong>
                     <br>
                     {{ app.company.name }}
-                    
-                    {% if app.company.industry %}
+                    <br>
+                    <small>📍 {{ app.country }}</small> {% if app.company.industry %}
                         <br><small><i>{{ app.company.industry }}</i></small>
-                    {% endif %}
-                    
-                    {% if app.company.country %}
-                        <br><small>📍 {{ app.company.country }}</small>
                     {% endif %}
                 </td>
 
                 <td>
                     {% if app.notes %}
                         <div style="background-color: #f1f1f1; padding: 8px; border-radius: 5px; margin-bottom: 8px; font-size: 0.9em; border-left: 3px solid #007bff;">
-                            <strong>📝 My Notes:</strong><br>
+                            <strong>📝 Notes:</strong><br>
                             {{ app.notes|linebreaks }}
                         </div>
                     {% endif %}
@@ -160,7 +142,7 @@
 
                 <td>
                     {% if app.job_link %}
-                        <a href="{{ app.job_link }}" target="_blank" role="button" class="outline" style="padding: 5px 10px; font-size: 0.8rem; width: 100%; margin-bottom: 5px;">
+                        <a href="{{ app.job_link }}" target="_blank" role="button" class="outline" style="padding: 5px; font-size: 0.8rem; width: 100%; margin-bottom: 5px;">
                             🔗 View Job Ad
                         </a>
                     {% endif %}
@@ -176,7 +158,7 @@
                         {% csrf_token %}
                         <button type="submit" 
                                 style="background-color: #dc3545; border-color: #dc3545; padding: 5px; font-size: 0.75rem; width: 100%;"
-                                onclick="return confirm('Are you sure you want to delete this application?');">
+                                onclick="return confirm('Delete this application?');">
                             🗑️ Delete
                         </button>
                     </form>
@@ -185,8 +167,7 @@
             {% empty %}
             <tr>
                 <td colspan="4" style="text-align: center; padding: 30px;">
-                    <h4>No applications tracked yet.</h4>
-                    <p>Use the form above to add your first internship application!</p>
+                    <h4>No applications yet.</h4>
                 </td>
             </tr>
             {% endfor %}

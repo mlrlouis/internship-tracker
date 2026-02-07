@@ -16,9 +16,9 @@ def company_list(request):
                         symbol = form.cleaned_data['company_symbol']
 
                         # Check if company already exists
-                        company, created = Company.get_or_create(name=company_name)
+                        company, created = Company.objects.get_or_create(name=company_name)
                         
-                        # If company is new and as a symbol exists -> get Yahoo data
+                        # If company is new and a symbol exists -> get Yahoo data
                         if created and symbol:
                                 api_data = get_company_profile(symbol)
                                 if api_data:

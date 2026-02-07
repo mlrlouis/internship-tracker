@@ -1,7 +1,7 @@
 from django import forms
-from tracker.models import Application
+from .models import Application
 
-class ApplicationForm(forms.Form):
+class ApplicationForm(forms.ModelForm):
         company_name = forms.CharField(
                 label="Company Name",
                 max_length=200,
@@ -24,10 +24,18 @@ class ApplicationForm(forms.Form):
 
         class Meta:
                 model = Application
-                fields = ['role', 'status', 'job_link', 'notes']
+                fields = ['role', 'country', 'status', 'job_link', 'notes']
                 widgets = {
                         'role': forms.TextInput(attrs={
                                 'placeholder': 'e.g. Software Engineer intern'
+                        }),
+
+                        'country': forms.TextInput(attrs={
+                                'placeholder': 'e.g. Germany, USA, Remote'
+                        }),
+
+                        'status': forms.Select(attrs={
+                                'style': 'width: 100%;'
                         }),
 
                         'job_link': forms.URLInput(attrs={
