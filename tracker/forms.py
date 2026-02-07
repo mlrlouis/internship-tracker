@@ -1,5 +1,5 @@
 from django import forms
-from models import Application
+from tracker.models import Application
 
 class ApplicationForm(forms.Form):
         company_name = forms.CharField(

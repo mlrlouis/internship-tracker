@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import ApplicationForm
 from .models import Company, Application
@@ -52,3 +52,15 @@ def company_list(request):
         }
 
         return render(request, 'tracker/company_list.html', context)
+
+def delete_application(request, application_id):
+        # Get the application or show 404 error if not found
+        application = get_object_or_404(Application, id=application_id)
+
+        # Delete it only if the request is a POST
+        if request.method == 'POST':
+                company_name = application.company.name
+                application.delete()
+                messages.success(request, f"Application for {company_name} deleted successfully!")
+        
+        return redirect('company_list')

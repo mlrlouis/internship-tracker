@@ -1,63 +1,197 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html lang="en">
 <head>
-        <meta charset="utf-8">
-        <title>Internship Tracker</title>
-        <style>
-                body{ font-family: sans-serif; max-width: 1000px; margin: 0; padding: 20px;}
-                message { padding: 10px; margin-bottom: 20px; border-radius: 5px; }
-                .success { background-color: #d4edda; color: #155724; }
-                .error { background-color: #f8d7da; color: #721c24; }
-                .company-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
-                .header-row { display: flex; justify-content: space-between; align-items: center; }
-                button { padding: 10px 20px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;}
-                input[type="text"] { padding: 8px; width: 200px; }
-        </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Internship Tracker</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    
+    <style>
+        /* Layout adjustments */
+        body { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        /* These classes replace the inline if-logic for colors */
+        .msg-success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+            padding: 10px; 
+            margin-bottom: 20px; 
+            border-radius: 5px;
+        }
+        .msg-error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+            padding: 10px; 
+            margin-bottom: 20px; 
+            border-radius: 5px;
+        }
+
+        /* STATUS BADGES */
+        .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 0.75em; font-weight: bold; color: white; display: inline-block;}
+        .status-saved { background-color: #6c757d; }      
+        .status-applied { background-color: #f6c23e; }    
+        .status-interview { background-color: #36b9cc; }  
+        .status-offer { background-color: #1cc88a; }      
+        .status-rejected { background-color: #e74a3b; }   
+
+        /* TABLE TWEAKS */
+        td { vertical-align: top; }
+        details { margin-bottom: 0; border-bottom: none; }
+        summary { font-size: 0.85rem; color: #007bff; font-weight: bold; cursor: pointer; }
+    </style>
 </head>
 <body>
-                <!--[if lt IE 7]>
-                        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-                <![endif]-->
-                <h1>Internship Tracker</h1>
 
-                {% if messages %}
-                        {% for message in messages %}
-                        <div class="message {{ message.tags }}">
-                                {{ message }}
-                        </div>
-                        {% endfor %}
-                {% endif %}
+    <nav>
+        <ul>
+            <li><strong>🚀 Internship Tracker</strong></li>
+        </ul>
+    </nav>
 
-                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30ßx;">
-                        <h2>Add new Company</h2>
-                        <form method="post">
-                            {% csrf_token %}  {{ form.as_p }}   <button type="submit">Add Company</button>    
-                        </form>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if 'error' in message.tags %}msg-error{% else %}msg-success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <article>
+        <header><strong>Add New Application</strong></header>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="grid">
+                <div>
+                    <label>Company Name *</label>
+                    {{ form.company_name }}
                 </div>
+                <div>
+                    <label>Role *</label>
+                    {{ form.role }}
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div>
+                    <label>Ticker Symbol (Optional)</label>
+                    {{ form.company_symbol }}
+                    <small>e.g., AAPL (Triggers auto-fetch from Yahoo Finance)</small>
+                </div>
+                <div>
+                    <label>Status</label>
+                    {{ form.status }}
+                </div>
+            </div>
 
-                <h2>Tracked Companies ({{ companies.count }})</h2>
+            <div class="grid">
+                 <div>
+                    <label>Job Ad Link</label>
+                    {{ form.job_link }}
+                 </div>
+                 <div>
+                    <label>My Notes</label>
+                    {{ form.notes }}
+                 </div>
+            </div>
 
-                {% for company in companies %}
-                        <div class="company-card">
-                                <div class="header-row">
-                                        <h3>{{ company.name }}</h3>
-                                        <span style="color: grey;">
-                                                {{ company.industry }}
-                                        </span>
-                                </div>
+            <button type="submit">Track Application</button>
+        </form>
+    </article>
 
-                                <p><strong>Employees:</strong> {{ company.employee_count}} | <strong>Revenue:</strong> {{ company.revenue }}</p>
-                                <p><em>{{ company.description|truncatewords:30 }}</em></p> 
-                                {% if company.website %}
-                                        <a href="{{ company.website }}" target="_blank">Visit Website</a>
-                                {% endif %}
+    <h3>My Applications ({{ applications.count }})</h3>
+
+    <table role="grid">
+        <thead>
+            <tr>
+                <th scope="col" style="width: 15%;">Status</th>
+                <th scope="col" style="width: 25%;">Role & Company</th>
+                <th scope="col" style="width: 40%;">Details & Notes</th>
+                <th scope="col" style="width: 20%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>
+                    <span class="status-badge status-{{ app.status }}">
+                        {{ app.get_status_display }}
+                    </span>
+                    <br>
+                    <small style="color: gray; margin-top: 5px; display: block;">
+                        📅 {{ app.date_applied|date:"M d, Y" }}
+                    </small>
+                </td>
+
+                <td>
+                    <strong>{{ app.role }}</strong>
+                    <br>
+                    {{ app.company.name }}
+                    
+                    {% if app.company.industry %}
+                        <br><small><i>{{ app.company.industry }}</i></small>
+                    {% endif %}
+                    
+                    {% if app.company.country %}
+                        <br><small>📍 {{ app.company.country }}</small>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if app.notes %}
+                        <div style="background-color: #f1f1f1; padding: 8px; border-radius: 5px; margin-bottom: 8px; font-size: 0.9em; border-left: 3px solid #007bff;">
+                            <strong>📝 My Notes:</strong><br>
+                            {{ app.notes|linebreaks }}
                         </div>
-                {% empty %}
-                        <p>No companies tracked yet. Add your first one above!</p>
-                {% endfor %}
+                    {% endif %}
+
+                    {% if app.company.description %}
+                        <details>
+                            <summary>ℹ️ Show Company Info</summary>
+                            <p style="font-size: 0.85rem; margin-top: 5px; text-align: justify; color: #555;">
+                                {{ app.company.description }}
+                            </p>
+                        </details>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if app.job_link %}
+                        <a href="{{ app.job_link }}" target="_blank" role="button" class="outline" style="padding: 5px 10px; font-size: 0.8rem; width: 100%; margin-bottom: 5px;">
+                            🔗 View Job Ad
+                        </a>
+                    {% endif %}
+                    
+                    {% if app.company.website %}
+                        <a href="{{ app.company.website }}" target="_blank" style="font-size: 0.8rem; display: block; text-align: center; margin-bottom: 10px;">
+                            Visit Website
+                        </a>
+                    {% endif %}
+
+                    <hr>
+                    <form action="{% url 'delete_application' app.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                style="background-color: #dc3545; border-color: #dc3545; padding: 5px; font-size: 0.75rem; width: 100%;"
+                                onclick="return confirm('Are you sure you want to delete this application?');">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 30px;">
+                    <h4>No applications tracked yet.</h4>
+                    <p>Use the form above to add your first internship application!</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </body>
 </html>
