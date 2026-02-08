@@ -4,15 +4,52 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Internship Tracker</title>
+    
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    
     <style>
+        /* Layout adjustments */
         body { padding: 20px; max-width: 1200px; margin: 0 auto; }
         
-        /* Message Colors */
-        .msg-success { background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #c3e6cb;}
-        .msg-error { background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #f5c6cb;}
+        /* --- DASHBOARD STYLE (KOMPAKTER) --- */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px; /* Weniger Abstand zwischen den Kacheln */
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: #1f2937; /* Dunkles Grau */
+            padding: 8px 5px; /* Viel weniger Polsterung (kompakt) */
+            border-radius: 6px;
+            flex: 1;
+            text-align: center;
+            min-width: 60px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
         
-        /* Badges */
+        .stat-card h2 {
+            margin: 0;
+            font-size: 1.2rem; /* Kleinere Zahl */
+            color: #fff;
+            line-height: 1.2;
+        }
+        
+        .stat-card small {
+            text-transform: uppercase;
+            font-size: 0.6rem; /* Kleinere Beschriftung */
+            letter-spacing: 0.5px;
+            color: #ccc;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* --- MESSAGE STYLES --- */
+        .msg-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+        .msg-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+
+        /* --- STATUS BADGES --- */
         .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 0.75em; font-weight: bold; color: white; display: inline-block;}
         .status-saved { background-color: #6c757d; }
         .status-applied { background-color: #f6c23e; }
@@ -20,6 +57,7 @@
         .status-offer { background-color: #1cc88a; }
         .status-rejected { background-color: #e74a3b; }
 
+        /* --- TABLE & NOTES --- */
         td { vertical-align: top; }
         details { margin-bottom: 0; border-bottom: none; }
         summary { font-size: 0.85rem; color: #007bff; font-weight: bold; cursor: pointer; }
@@ -33,12 +71,9 @@
             border-left: 4px solid #007bff;
             color: #000000 !important; 
         }
-
-        .notes-box p {
-            color: #000000 !important;
-            margin-bottom: 5px;
-        }
-
+        .notes-box p { color: #000000 !important; margin-bottom: 5px; }
+        
+        /* Edit Button Style */
         .btn-edit {
             background-color: #f6c23e; 
             border-color: #f6c23e; 
@@ -51,7 +86,7 @@
             display: inline-block;
             text-align: center;
             text-decoration: none;
-            border-radius: 4px; 
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -77,42 +112,21 @@
             {% csrf_token %}
             
             <div class="grid">
-                <div>
-                    <label>Company Name *</label>
-                    {{ form.company_name }}
-                </div>
-                <div>
-                    <label>Ticker Symbol (Optional)</label>
-                    {{ form.company_symbol }}
-                    <small>For auto-data (e.g., AAPL)</small>
-                </div>
+                <div><label>Company Name *</label>{{ form.company_name }}</div>
+                <div><label>Ticker Symbol (Optional)</label>{{ form.company_symbol }}<small>For auto-data (e.g., AAPL)</small></div>
             </div>
             
             <div class="grid">
-                <div>
-                    <label>Role *</label>
-                    {{ form.role }}
-                </div>
-                <div>
-                    <label>Country *</label> {{ form.country }}
-                </div>
+                <div><label>Role *</label>{{ form.role }}</div>
+                <div><label>Country *</label>{{ form.country }}</div>
             </div>
 
             <div class="grid">
-                <div>
-                    <label>Status</label>
-                    {{ form.status }}
-                </div>
-                 <div>
-                    <label>Job Ad Link</label>
-                    {{ form.job_link }}
-                 </div>
+                <div><label>Status</label>{{ form.status }}</div>
+                 <div><label>Job Ad Link</label>{{ form.job_link }}</div>
             </div>
 
-            <div>
-                <label>My Notes</label>
-                {{ form.notes }}
-            </div>
+            <div><label>My Notes</label>{{ form.notes }}</div>
 
             <button type="submit" style="margin-top: 20px;">Track Application</button>
         </form>
@@ -120,7 +134,37 @@
 
     <h3>My Applications ({{ applications.count }})</h3>
 
-    <tbody>
+    <div class="stats-row">
+        <div class="stat-card" style="border-top: 3px solid #fff;">
+            <small>Total</small><h2>{{ stats.total }}</h2>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid #6c757d;">
+            <small>Saved</small><h2>{{ stats.saved }}</h2>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid #f6c23e;">
+            <small>Applied</small><h2>{{ stats.applied }}</h2>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid #36b9cc;">
+            <small>Intv.</small><h2>{{ stats.interview }}</h2>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid #1cc88a;">
+            <small>Offer</small><h2>{{ stats.offer }}</h2>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid #e74a3b;">
+            <small>Reject</small><h2>{{ stats.rejected }}</h2>
+        </div>
+    </div>
+
+    <table role="grid">
+        <thead>
+            <tr>
+                <th scope="col" style="width: 15%;">Status</th>
+                <th scope="col" style="width: 25%;">Role & Company</th>
+                <th scope="col" style="width: 40%;">Details & Notes</th>
+                <th scope="col" style="width: 20%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for app in applications %}
             <tr>
                 <td>
@@ -134,19 +178,11 @@
                 </td>
 
                 <td>
-                    <strong>{{ app.role }}</strong>
-                    <br>
-                    {{ app.company.name }}
-                    <br>
+                    <strong>{{ app.role }}</strong><br>
+                    {{ app.company.name }}<br>
                     <small>📍 {{ app.country }}</small>
-                    
-                    {% if app.company.industry %}
-                        <br><small>🏭 {{ app.company.industry }}</small>
-                    {% endif %}
-                    
-                    {% if app.company.employee_count %}
-                        <br><small>👥 {{ app.company.employee_count }} Employees</small>
-                    {% endif %}
+                    {% if app.company.industry %}<br><small>🏭 {{ app.company.industry }}</small>{% endif %}
+                    {% if app.company.employee_count %}<br><small>👥 {{ app.company.employee_count }} Emp.</small>{% endif %}
                 </td>
 
                 <td>
@@ -156,7 +192,6 @@
                             {{ app.notes|linebreaks }}
                         </div>
                     {% endif %}
-
                     {% if app.company.description %}
                         <details>
                             <summary>ℹ️ Show Company Info</summary>
@@ -169,30 +204,19 @@
 
                 <td>
                     {% if app.job_link %}
-                        <a href="{{ app.job_link }}" target="_blank" role="button" class="outline" style="padding: 5px; font-size: 0.8rem; width: 100%; margin-bottom: 5px;">
-                            🔗 View Job Ad
-                        </a>
+                        <a href="{{ app.job_link }}" target="_blank" role="button" class="outline" style="padding: 5px; font-size: 0.8rem; width: 100%; margin-bottom: 5px;">🔗 View Job Ad</a>
+                    {% endif %}
+                    {% if app.company.website %}
+                        <a href="{{ app.company.website }}" target="_blank" style="font-size: 0.8rem; display: block; text-align: center; margin-bottom: 10px;">Visit Website</a>
                     {% endif %}
                     
-                    {% if app.company.website %}
-                        <a href="{{ app.company.website }}" target="_blank" style="font-size: 0.8rem; display: block; text-align: center; margin-bottom: 10px;">
-                            Visit Website
-                        </a>
-                    {% endif %}
-
-                    <a href="{% url 'edit_application' app.id %}" class="btn-edit" role="button">
-                        ✏️ Edit
-                    </a>
-
+                    <a href="{% url 'edit_application' app.id %}" class="btn-edit" role="button">✏️ Edit</a>
+                    
                     <hr style="margin: 10px 0;">
-
+                    
                     <form action="{% url 'delete_application' app.id %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" 
-                                style="background-color: #dc3545; border-color: #dc3545; padding: 5px; font-size: 0.75rem; width: 100%;"
-                                onclick="return confirm('Delete this application?');">
-                            🗑️ Delete
-                        </button>
+                        <button type="submit" style="background-color: #dc3545; border-color: #dc3545; padding: 5px; font-size: 0.75rem; width: 100%;" onclick="return confirm('Delete this application?');">🗑️ Delete</button>
                     </form>
                 </td>
             </tr>

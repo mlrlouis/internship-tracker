@@ -46,9 +46,19 @@ def company_list(request):
         # Case 2: Show list
         applications = Application.objects.all().order_by('-date_applied')
 
+        stats = {
+                'total': applications.count(),
+                'saved': applications.filter(status='saved').count(),
+                'applied': applications.filter(status='applied').count(),
+                'interview': applications.filter(status='interview').count(),
+                'offer': applications.filter(status='offer').count(),
+                'rejected': applications.filter(status='rejected').count(),
+        }
+
         context = {
                 'form': form,
-                'applications': applications
+                'applications': applications,
+                'stats': stats
         }
 
         return render(request, 'tracker/company_list.html', context)
