@@ -31,7 +31,7 @@ class Application(models.Model):
         company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='applications')
         role = models.CharField(max_length=200)
 
-        country = models.CharField(max_length=100, default="Germany")
+        country = models.CharField(max_length=100)
 
         status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='saved')
         job_link = models.URLField(blank=True, null=True)

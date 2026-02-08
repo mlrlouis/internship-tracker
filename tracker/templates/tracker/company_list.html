@@ -23,6 +23,36 @@
         td { vertical-align: top; }
         details { margin-bottom: 0; border-bottom: none; }
         summary { font-size: 0.85rem; color: #007bff; font-weight: bold; cursor: pointer; }
+
+        .notes-box {
+            background-color: #f1f1f1; 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin-bottom: 8px; 
+            font-size: 0.95em; 
+            border-left: 4px solid #007bff;
+            color: #000000 !important; 
+        }
+
+        .notes-box p {
+            color: #000000 !important;
+            margin-bottom: 5px;
+        }
+
+        .btn-edit {
+            background-color: #f6c23e; 
+            border-color: #f6c23e; 
+            color: #000; 
+            font-weight: bold;
+            padding: 5px; 
+            font-size: 0.75rem; 
+            width: 100%; 
+            margin-bottom: 5px;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px; 
+        }
     </style>
 </head>
 <body>
@@ -90,16 +120,7 @@
 
     <h3>My Applications ({{ applications.count }})</h3>
 
-    <table role="grid">
-        <thead>
-            <tr>
-                <th scope="col" style="width: 15%;">Status</th>
-                <th scope="col" style="width: 25%;">Role & Company</th>
-                <th scope="col" style="width: 40%;">Details & Notes</th>
-                <th scope="col" style="width: 20%;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <tbody>
             {% for app in applications %}
             <tr>
                 <td>
@@ -117,15 +138,21 @@
                     <br>
                     {{ app.company.name }}
                     <br>
-                    <small>📍 {{ app.country }}</small> {% if app.company.industry %}
-                        <br><small><i>{{ app.company.industry }}</i></small>
+                    <small>📍 {{ app.country }}</small>
+                    
+                    {% if app.company.industry %}
+                        <br><small>🏭 {{ app.company.industry }}</small>
+                    {% endif %}
+                    
+                    {% if app.company.employee_count %}
+                        <br><small>👥 {{ app.company.employee_count }} Employees</small>
                     {% endif %}
                 </td>
 
                 <td>
                     {% if app.notes %}
-                        <div style="background-color: #f1f1f1; padding: 8px; border-radius: 5px; margin-bottom: 8px; font-size: 0.9em; border-left: 3px solid #007bff;">
-                            <strong>📝 Notes:</strong><br>
+                        <div class="notes-box">
+                            <strong>📝 My Notes:</strong><br>
                             {{ app.notes|linebreaks }}
                         </div>
                     {% endif %}
@@ -153,12 +180,12 @@
                         </a>
                     {% endif %}
 
-                    <a href="{% url 'edit_application' app.id %}" role="button" style="background-color: #f6c23e; border-color: #f6c23e; color: #fff; padding: 5px; font-size: 0.75rem; width: 100%; margin-bottom: 5px;">
+                    <a href="{% url 'edit_application' app.id %}" class="btn-edit" role="button">
                         ✏️ Edit
                     </a>
 
-                    <hrstyle="margin: 10px 0;">
-                    
+                    <hr style="margin: 10px 0;">
+
                     <form action="{% url 'delete_application' app.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" 
@@ -173,6 +200,7 @@
             <tr>
                 <td colspan="4" style="text-align: center; padding: 30px;">
                     <h4>No applications yet.</h4>
+                    <p>Use the form above to add your first internship application!</p>
                 </td>
             </tr>
             {% endfor %}

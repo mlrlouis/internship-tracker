@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='application',
             name='country',
-            field=models.CharField(default='Germany', max_length=100),
+            field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
             model_name='application',
