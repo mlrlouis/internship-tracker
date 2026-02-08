@@ -47,3 +47,31 @@ class ApplicationForm(forms.ModelForm):
                                 'placeholder': 'Notes: Salary, Interview feedback, etc.'
                         })
                 }
+
+class ApplicationEditForm(forms.ModelForm):
+        class Meta:
+                model = Application
+
+                fields = ['role', 'country', 'status', 'job_link', 'notes']
+
+                widgets = {
+                        'role': forms.TextInput(attrs={
+                                'class': 'input-field'
+                        }),
+
+                        'country': forms.TextInput(attrs={
+                                'class': 'input-field'
+                        }),
+
+                        'status': forms.Select(attrs={
+                                'style': 'width: 100%;'
+                        }),
+
+                        'job_link': forms.URLInput(attrs={
+                                'class': 'input-field'
+                        }),
+
+                        'notes' : forms.Textarea(attrs={
+                                'rows': 3
+                        })
+                }

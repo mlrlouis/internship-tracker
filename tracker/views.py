@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import ApplicationForm
+from .forms import ApplicationForm, ApplicationEditForm
 from .models import Company, Application
 from .services.company_api import get_company_profile
 
@@ -64,3 +64,21 @@ def delete_application(request, application_id):
                 messages.success(request, f"Application for {company_name} deleted successfully!")
         
         return redirect('company_list')
+
+def edit_application(request, application_id):
+        application = get_object_or_404(Application, id=application_id)
+
+        if request.method == 'POST':
+                form = ApplicationEditForm(request.POST, instance=application)
+                
+                if form.is_valid():
+                        form.save()
+                        messages.success(request, f"Application for {application.company.name} got updated!")
+                        return redirect('company_list')
+        else:
+                form = ApplicationEditForm(instance=application)
+        
+        return render(request, 'tracker/application_edit.html', {
+                'form': form,
+                'application': application
+        })

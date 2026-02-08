@@ -153,7 +153,12 @@
                         </a>
                     {% endif %}
 
-                    <hr>
+                    <a href="{% url 'edit_application' app.id %}" role="button" style="background-color: #f6c23e; border-color: #f6c23e; color: #fff; padding: 5px; font-size: 0.75rem; width: 100%; margin-bottom: 5px;">
+                        ✏️ Edit
+                    </a>
+
+                    <hrstyle="margin: 10px 0;">
+                    
                     <form action="{% url 'delete_application' app.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" 

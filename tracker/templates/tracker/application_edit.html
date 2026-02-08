@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Application</title>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    <style>
+        body { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .input-field { width: 100%; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><strong>✏️ Edit Application</strong></li>
+        </ul>
+        <ul>
+            <li><a href="{% url 'company_list' %}" role="button" class="secondary outline">Cancel & Back</a></li>
+        </ul>
+    </nav>
+
+    <article>
+        <header>
+            <strong>Editing: {{ application.role }} at {{ application.company.name }}</strong>
+        </header>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="grid">
+                <div>
+                    <label>Company Name</label>
+                    {{ form.company_name }}
+                </div>
+                <div>
+                    <label>Role</label>
+                    {{ form.role }}
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label>Ticker Symbol</label>
+                    {{ form.company_symbol }}
+                </div>
+                <div>
+                    <label>Status</label>
+                    {{ form.status }}
+                </div>
+            </div>
+
+            <div class="grid">
+                 <div>
+                    <label>Job Ad Link</label>
+                    {{ form.job_link }}
+                 </div>
+                 <div>
+                    <label>Country</label>
+                    {{ form.country }}
+                 </div>
+            </div>
+
+            <div>
+                <label>My Notes</label>
+                {{ form.notes }}
+            </div>
+
+            <button type="submit" style="margin-top: 20px;">💾 Save Changes</button>
+        </form>
+    </article>
+
+</body>
+</html>
