@@ -36,7 +36,7 @@ If you want to run this project locally on your machine:
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/YOUR_USERNAME/internship-tracker.git](https://github.com/YOUR_USERNAME/internship-tracker.git)
+git clone [https://github.com/mlrlouis/internship-tracker.git](https://github.com/mlrlouis/internship-tracker.git)
 cd internship-tracker
 ```
 
