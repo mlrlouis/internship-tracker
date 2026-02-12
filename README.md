@@ -36,7 +36,7 @@ If you want to run this project locally on your machine:
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/mlrlouis/internship-tracker.git](or git@github.com:mlrlouis/internship-tracker.git)
+git clone [https://github.com/mlrlouis/internship-tracker.git](https://github.com/mlrlouis/internship-tracker.git)
 cd internship-tracker
 ```
 
@@ -70,3 +70,5 @@ Open your browser and visit http://127.0.0.1:8000/.
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request if you have ideas for new features (e.g., email reminders, file uploads)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
