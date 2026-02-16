@@ -21,7 +21,7 @@ It helps you organize the entire application lifecycle—from "Saved" to "Offer"
 
 ## Screenshots
 
-<img width="588" height="870" alt="grafik" src="https://github.com/user-attachments/assets/f0647b35-f542-4c75-9174-d1ddbc6d4d8a" />
+<img width="834" height="1217" alt="grafik" src="https://github.com/user-attachments/assets/43bc9462-614d-4a30-b6d4-3df71315c549" />
 
 ## Tech Stack
 
