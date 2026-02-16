@@ -40,25 +40,61 @@ def company_list(request):
 
                         messages.success(request, "Application added successfully!")
                         return redirect('company_list')
+                else:
+                        messages.error(request, "Please check your input.")
         else:
                 form = ApplicationForm()
         
         # Case 2: Show list
-        applications = Application.objects.all().order_by('-date_applied')
+        all_aps = Application.objects.all()
 
+        applications = Application.objects.all()
+
+        # Filter 1: by status
+        status_filter = request.GET.get('status')
+        if status_filter:
+                applications = applications.filter(status=status_filter)
+
+        # Filter 2: by country
+        country_filter = request.GET.get('country')
+        if country_filter and country_filter != 'ALL':
+                applications = applications.filter(country=country_filter)
+
+        # sort
+        sort_by = request.GET.get('sort')
+        if sort_by == 'oldest':
+                applications = applications.order_by('date_applied')
+        elif sort_by == 'country':
+                applications = applications.order_by('country')
+        elif sort_by == 'company':
+                applications = applications.order_by('company__name')
+        elif sort_by == 'status':
+                applications = applications.order_by('status')
+        else:
+                applications = applications.order_by('-date_applied')
+
+        # Get list of available countries for the filter dropdown
+        unique_countries = Application.objects.values_list('country', flat=True).distinct()
+        available_countries = sorted([c for c in unique_countries if c])
+        
         stats = {
-                'total': applications.count(),
-                'saved': applications.filter(status='saved').count(),
-                'applied': applications.filter(status='applied').count(),
-                'interview': applications.filter(status='interview').count(),
-                'offer': applications.filter(status='offer').count(),
-                'rejected': applications.filter(status='rejected').count(),
+                'total': all_aps.count(),
+                'saved': all_aps.filter(status='saved').count(),
+                'applied': all_aps.filter(status='applied').count(),
+                'interview': all_aps.filter(status='interview').count(),
+                'rejected': all_aps.filter(status='rejected').count(),
+                'offer': all_aps.filter(status='offer').count(),
+                'accepted': all_aps.filter(status='accepted').count(),
         }
 
         context = {
                 'form': form,
                 'applications': applications,
-                'stats': stats
+                'stats': stats,
+                'available_countries': available_countries,
+                'current_status': status_filter,
+                'current_country': country_filter,
+                'current_sort': sort_by,
         }
 
         return render(request, 'tracker/company_list.html', context)
