@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.urls import reverse
 from .forms import ApplicationForm, ApplicationEditForm
 from .models import Company, Application
 from .services.company_api import get_company_profile
@@ -108,7 +109,11 @@ def delete_application(request, application_id):
                 company_name = application.company.name
                 application.delete()
                 messages.success(request, f"Application for {company_name} deleted successfully!")
-        
+                query_string = request.GET.urlencode()
+                base_url = reverse('company_list')
+
+                if query_string:
+                        return redirect(f"{base_url}?{query_string}")
         return redirect('company_list')
 
 def edit_application(request, application_id):
@@ -120,7 +125,12 @@ def edit_application(request, application_id):
                 if form.is_valid():
                         form.save()
                         messages.success(request, f"Application for {application.company.name} got updated!")
-                        return redirect('company_list')
+                        query_string = request.GET.urlencode()
+                        base_url = reverse('company_list')
+
+                        if query_string:
+                                return redirect(f"{base_url}?{query_string}")
+                return redirect('company_list')
         else:
                 form = ApplicationEditForm(instance=application)
         

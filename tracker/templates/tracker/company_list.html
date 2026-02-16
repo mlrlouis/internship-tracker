@@ -266,13 +266,12 @@
                         <a href="{{ app.company.website }}" target="_blank" style="font-size: 0.8rem; display: block; text-align: center; margin-bottom: 10px;">Visit Website</a>
                     {% endif %}
                     
-                    <a href="{% url 'edit_application' app.id %}" class="btn-edit" role="button">✏️ Edit</a>
-                    
+                    <a href="{% url 'edit_application' app.id %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" class="btn-edit" role="button">✏️ Edit</a>                    
                     <hr style="margin: 10px 0;">
                     
-                    <form action="{% url 'delete_application' app.id %}" method="post">
+                    <form action="{% url 'delete_application' app.id %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" style="background-color: #dc3545; border-color: #dc3545; padding: 5px; font-size: 0.75rem; width: 100%;" onclick="return confirm('Delete this application?');">🗑️ Delete</button>
+                        <button type="submit" style="background-color: #dc3545; border-color: #dc3545; padding: 5px; font-size: 0.75rem; width: 100%;"  onclick="return confirm('Delete this application?');">🗑️ Delete </button>
                     </form>
                 </td>
             </tr>
