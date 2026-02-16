@@ -24,8 +24,9 @@ class Application(models.Model):
                 ('saved', 'Saved'),
                 ('applied', 'Applied'),
                 ('interview', 'Interview'),
-                ('offer', 'Offer'),
                 ('rejected', 'Rejected'),
+                ('offer', 'Offer'),
+                ('accepted', 'Accepted'),
         ]
 
         company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='applications')
